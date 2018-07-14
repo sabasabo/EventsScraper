@@ -12,7 +12,12 @@ public class ScrapeItAll {
     private static final String THINK_AND_DRINK_EVENT_CLASS = "cat1";
 
     public static void main(String[] args) {
-//        System.setProperty("webdriver.gecko.driver","path of geckodriver.exe");
+        scrape();
+
+    }
+
+    public static String scrape() {
+        //        System.setProperty("webdriver.gecko.driver","path of geckodriver.exe");
         WebDriver driver = new FirefoxDriver();
 //        driver.navigate().to("http://www.google.com");
         driver.get(THINK_AND_DRINK_URL);
@@ -20,29 +25,31 @@ public class ScrapeItAll {
             System.exit(0);
         }
         List<WebElement> eventElements = ((FirefoxDriver) driver).findElementsByClassName(THINK_AND_DRINK_EVENT_CLASS);
+        StringBuilder result = new StringBuilder();
         for (WebElement eventElement : eventElements) {
             String link = getLink(eventElement);
             String image = getImage(eventElement);
             String date = eventElement.findElement(By.tagName("h3")).getText();
             String time = eventElement.findElement(By.tagName("h4")).getText();
             String shortDescription = eventElement.findElement(By.tagName("h2")).getText();
-            System.out.println("event:");
-            System.out.println("shortDescription:");
-            System.out.println(shortDescription);
-            System.out.println("date:");
-            System.out.println(date);
-            System.out.println("time:");
-            System.out.println(time);
-            System.out.println("link:");
-            System.out.println(link);
-            System.out.println("image:");
-            System.out.println(image);
-            System.out.println("\n\n");
+            result.append("event:").append('\n');
+            result.append("shortDescription:").append('\n');
+            result.append(shortDescription).append('\n');
+            result.append("date:").append('\n');
+            result.append(date).append('\n');
+            result.append("time:").append('\n');
+            result.append(time).append('\n');
+            result.append("link:").append('\n');
+            result.append(link).append('\n');
+            result.append("image:").append('\n');
+            result.append(image).append('\n');
+            result.append("\n\n").append('\n');
         }
-        System.out.println(eventElements.size());
+        result.append(eventElements.size()).append('\n');
 
 
         driver.close();
+        return result.toString();
     }
 
     private static String getImage(WebElement eventElement) {
