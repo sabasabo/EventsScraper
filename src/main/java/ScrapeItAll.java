@@ -3,6 +3,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScrapeItAll {
@@ -16,7 +17,7 @@ public class ScrapeItAll {
 
     }
 
-    public static String scrape() {
+    public static List<String> scrape() {
         //        System.setProperty("webdriver.gecko.driver","path of geckodriver.exe");
         WebDriver driver = new FirefoxDriver();
 //        driver.navigate().to("http://www.google.com");
@@ -25,13 +26,14 @@ public class ScrapeItAll {
             System.exit(0);
         }
         List<WebElement> eventElements = ((FirefoxDriver) driver).findElementsByClassName(THINK_AND_DRINK_EVENT_CLASS);
-        StringBuilder result = new StringBuilder();
+        List<String> results = new ArrayList<String>();
         for (WebElement eventElement : eventElements) {
             String link = getLink(eventElement);
             String image = getImage(eventElement);
             String date = eventElement.findElement(By.tagName("h3")).getText();
             String time = eventElement.findElement(By.tagName("h4")).getText();
             String shortDescription = eventElement.findElement(By.tagName("h2")).getText();
+            StringBuilder result = new StringBuilder();
             result.append("event:").append('\n');
             result.append("shortDescription:").append('\n');
             result.append(shortDescription).append('\n');
@@ -44,12 +46,11 @@ public class ScrapeItAll {
             result.append("image:").append('\n');
             result.append(image).append('\n');
             result.append("\n\n").append('\n');
+            results.add(result.toString());
         }
-        result.append(eventElements.size()).append('\n');
-
 
         driver.close();
-        return result.toString();
+        return results;
     }
 
     private static String getImage(WebElement eventElement) {

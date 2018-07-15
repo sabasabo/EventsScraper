@@ -3,6 +3,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 import java.util.List;
@@ -18,11 +19,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         telegramBotsApi.registerBot(new TelegramBot());
 
+
     }
 
     public void onUpdateReceived(Update update) {
-        SendMessage sendMessage = new SendMessage().setChatId(update.getMessage().getChatId())
-                .setText(ScrapeItAll.scrape());
+        List<String> scrapeResults = ScrapeItAll.scrape();
+        for (String event : scrapeResults) {
+            SendMessage sendMessage = new SendMessage().setChatId(update.getMessage().getChatId())
+                    .setText(event);
+            try {
+                execute(sendMessage); // Call method to send the message
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String getBotUsername() {
